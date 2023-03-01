@@ -14,6 +14,9 @@ export default class Start extends Phaser.Scene{
 
         //carregando o sprite do icone de menu
         this.load.image('menu', './src/assets/img/menu_icon.png')
+
+        //carregando a musica de fundo
+        this.load.audio('music', './src/assets/audio/start-music.mp3');
     }
     
     create() {
@@ -23,12 +26,16 @@ export default class Start extends Phaser.Scene{
 
         // adicionando o plano de fundo
         this.add.image(width/2, height/2, 'background');
-        
+
+        // tocando musica
+        this.music = this.sound.add('music', {loop: true, volume: 0.1});
+        this.music.play()
+
         this.add.text(50, 50, 'Press SPACE to start', textStyle);
 
         // criando a nave
         let spacecraft = this.add.sprite(width/2, 300, 'spacecraft').setScale(0.3);
-
+    
         // adicionando animação de "idle", na nave
         this.tweens.add({
             targets: spacecraft,
@@ -65,7 +72,10 @@ export default class Start extends Phaser.Scene{
         });
 
         // adicionando interação quando o mouse clica
-        menu.on('pointerdown', () => {this.scene.stop(), this.scene.start('menu')});
+        menu.on('pointerdown', () => {
+            this.scene.stop(),
+            this.scene.start('menu')
+        });
     }
     
     update() {
