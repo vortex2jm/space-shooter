@@ -5,7 +5,9 @@ export default class Pause extends Phaser.Scene{
         super('pause');
     }
 
-    init() {}
+    init({ gameMusic }) {
+        this.gameMusic = gameMusic;
+    }
 
     preload() {
         /* carregando as imagens */
@@ -37,8 +39,7 @@ export default class Pause extends Phaser.Scene{
         playPauseButton.on('pointerover', ()=> {playPauseButton.setScale(0.22)});
         playPauseButton.on('pointerout', ()=> {playPauseButton.setScale(0.5)});
         playPauseButton.on('pointerdown', ()=> {
-            this.scene.resume('game');
-            this.scene.stop();
+            this.resume();
         })
 
         const home = this.add.image(300,410, 'home').setScale(0.4).setInteractive();
@@ -64,11 +65,15 @@ export default class Pause extends Phaser.Scene{
     
     update(){
         /* criando a ação para a tecla shift */
-        const kShift = this.keys.shift.isDown;
+        if(this.keys.shift.isDown)
+            this.resume();
+    }
 
-        if(kShift) {
-            this.scene.resume('game');
-            this.scene.stop();
-        }
+    // Função criada para evitar repetição de código
+    resume(){
+        this.scene.resume('game');
+        this.scene.stop();
+        this.gameOverAudio.stop();
+        this.gameMusic.play();
     }
 }

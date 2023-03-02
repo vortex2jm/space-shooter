@@ -16,7 +16,8 @@ export default class Menu extends Phaser.Scene {
   create() {
     // pegando as dimensões da cena
     const { width, height } = this.scale;
-    const textStyle = { color: '#fff', fontSize: 23 };
+    const textStyle = { color: '#fff', fontSize: 16 };
+    const textStyle2 = { color: '#fff', fontSize: 18 };
 
     // adicionando o plano de fundo
     this.add.image(width / 2, height / 2, 'background');
@@ -38,14 +39,14 @@ export default class Menu extends Phaser.Scene {
 
     // adicionando as instruções básicas
     this.add.text(40, 200, 'Controlar a nave:', textStyle)
-    this.add.text(50, 240, '<-  Move a nave para a esquerda', { fontSize: 16, color: "#fff" })
-    this.add.text(50, 280, '->  Move a nave para a direita', { fontSize: 16, color: "#fff" })
-    this.add.text(50, 320, '/\\  Move a nave para cima', { fontSize: 16, color: "#fff" })
-    this.add.text(50, 360, '\\/  Move a nave para baixo', { fontSize: 16, color: "#fff" })
+    this.add.text(50, 240, '<-  Move a nave para a esquerda', textStyle)
+    this.add.text(50, 280, '->  Move a nave para a direita', textStyle)
+    this.add.text(50, 320, '/\\  Move a nave para cima', textStyle)
+    this.add.text(50, 360, '\\/  Move a nave para baixo', textStyle)
+    this.add.text(50, 400, 'SPACE  Atirar', textStyle)
 
-    this.add.text(40, 500, 'Desvie dos inimigos', textStyle)
-    this.add.text(40, 540, 'Colete as moedas', textStyle)
-
+    this.add.text(40, 500, 'Desvie dos inimigos', textStyle2)
+    this.add.text(40, 540, 'Atinja-os para adquirir pontos', textStyle2)
   }
 
   update() {

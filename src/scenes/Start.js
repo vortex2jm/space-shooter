@@ -51,6 +51,7 @@ export default class Start extends Phaser.Scene {
     // adicionando a funcionalidade de apertar a barra de espaço
     // para mudar de cena
     this.input.keyboard.once('keydown-SPACE', () => {
+      this.scene.stop();
       this.scene.start('game');
       this.game.sound.stopAll();
     })

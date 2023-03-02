@@ -8,7 +8,7 @@ export default class Game extends Phaser.Scene{
     init(){
         this.lifes = 3;
         this.score = 0;
-        this.backgroundVelocity = 1;
+        this.backgroundVelocity = 0;
         this.shipWidth = 72;
         this.shipHeight = 72;
         this.lastFired = 0;
@@ -21,7 +21,6 @@ export default class Game extends Phaser.Scene{
     }
     
     preload(){
-        
         // carregando as imagens
         this.load.image('background', './src/assets/img/galaxy.png');
         this.load.image('ship', './src/assets/img/spacecraft.png');
@@ -37,8 +36,6 @@ export default class Game extends Phaser.Scene{
             { frameWidth: 400, frameHeight: 400 }
         );
 
-
-
         // carregando os audios
         this.load.audio('collectCoinMusic', './src/assets/audio/collect-coin.mp3');
         this.load.audio('gameMusic', './src/assets/audio/game-music.mp3');
@@ -46,11 +43,11 @@ export default class Game extends Phaser.Scene{
         this.load.audio('gameOverMusic', './src/assets/audio/game-over-sound.mp3');
         this.load.audio('laserShot', './src/assets/audio/laser-shot.mp3');
         this.load.audio('spaceSound', './src/assets/audio/thriller-space-sound.mp3');
+        this.load.audio('impact', './src/assets/audio/impact.wav');
         
         // criando as teclas
         this.keys = this.input.keyboard.createCursorKeys();
         this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
-
     }
     
     create(){
@@ -60,12 +57,11 @@ export default class Game extends Phaser.Scene{
         this.gameStartMusic = this.sound.add('gameStartMusic', {loop: false});
         this.gameMusic = this.sound.add('gameMusic', {loop: true});
         this.gameOverMusic = this.sound.add('gameOverMusic', {loop: false});
+        this.impactSound = this.sound.add('impact', {loop:false, volume: 0.4})
 
         // toca a musica de inicio do jogo, e quando terminar, toca a musica do jogo, em loop
         this.gameStartMusic.play();
-        this.gameStartMusic.on('complete', () => {
-            this.gameMusic.play();
-        });
+        this.gameMusic.play();
 
         // adicionando o background
         this.background = this.add.tileSprite(width/2, height/2, width, height, 'background');
@@ -100,11 +96,9 @@ export default class Game extends Phaser.Scene{
             frameRate: 40,
             repeat: -1
         });
-
     }
     
     update(){
-
         this.background.tilePositionY = this.backgroundVelocity;
         // movimentação da nave
         this.move()
@@ -112,7 +106,8 @@ export default class Game extends Phaser.Scene{
         //pausando o jogo
         if(this.escKey.isDown){
             this.scene.pause();
-            this.scene.launch('pause');
+            this.scene.launch('pause', {gameMusic: this.gameMusic});
+            this.gameMusic.pause();
         }
 
         // disparo do tiro
@@ -123,10 +118,8 @@ export default class Game extends Phaser.Scene{
             }
         }
 
-
         // adicionando os inimigos
         if(this.time.now > this.lastSpawned){
-            
             this.createEnemy();
             this.lastSpawned = this.time.now + this.spawnCooldown;
         }
@@ -137,10 +130,8 @@ export default class Game extends Phaser.Scene{
         // colisão do tiro com o inimigo
         this.physics.add.overlap(this.laserShotGroup, this.alienGroup, this.hitAlien, null, this);
 
-        this.updateVelocity();
-        
-
-
+        // Atualizando a posição do background (efeito de movimento)
+        this.updateBackgroundVelocity();
     }
 
     move(){
@@ -200,19 +191,23 @@ export default class Game extends Phaser.Scene{
         this.laserShotGroup.killAndHide(lasershot);
         this.laserShotGroup.remove(lasershot);
         lasershot.destroy();
+        alien.destroy();
         this.score+=10;
         this.scoreText.setText(`Pontos: ${this.score}`);
-
+        this.impactSound.play();
     }
 
-    updateVelocity(){
+    updateBackgroundVelocity(){
+        // Evitar overflow
+        if(this.backgroundVelocity === -1000000)
+            this.backgroundVelocity = 0;
         this.backgroundVelocity -= 3;
     }
 
     gameOver(){
         this.gameMusic.stop();
         this.gameOverMusic.play();
-        this.scene.pause();
-        this.scene.launch('gameOver');
+        this.scene.stop();
+        this.scene.start('gameover');
     }
 }
