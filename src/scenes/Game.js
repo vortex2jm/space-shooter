@@ -52,7 +52,7 @@ export default class Game extends Phaser.Scene{
     
     create(){
         const {width, height} = this.scale;
-        console.log(width, height);
+        // console.log(width, height);
 
         this.gameStartMusic = this.sound.add('gameStartMusic', {loop: false});
         this.gameMusic = this.sound.add('gameMusic', {loop: true});
@@ -165,6 +165,11 @@ export default class Game extends Phaser.Scene{
 
         // inverte a posição do tiro
         this.shotPosition = this.shotPosition * -1;
+
+        // removendo os tiros que estão fora da tela
+        this.laserShotGroup.children.iterate((child)=>{
+            if (child && child.body.y<-this.scale.height) child.destroy()
+        })
     }
 
     createEnemy(){
@@ -174,6 +179,11 @@ export default class Game extends Phaser.Scene{
             child.play('alien1');
             child.setVelocityY(100);
         });
+
+        // removendo os inimigos que passaram para fora da tela e não foram mortos
+        this.alienGroup.children.iterate((child)=>{
+            if (child && child.body.y>this.scale.height) child.destroy()
+        })
     }
 
     hitShip(ship, alien){
