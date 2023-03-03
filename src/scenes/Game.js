@@ -209,7 +209,17 @@ export default class Game extends Phaser.Scene{
         this.laserShotGroup.killAndHide(lasershot);
         this.laserShotGroup.remove(lasershot);
         lasershot.destroy();
-        alien.destroy();
+        alien.stop('alien1');
+        alien.play('alien1-dead');
+        alien.setVelocityY(0);
+        this.time.addEvent({
+            delay: 500,
+            callback: () => {
+                this.alienGroup.killAndHide(alien);
+                this.alienGroup.remove(alien);
+            },
+            loop: false
+        });
         this.score+=10;
         this.scoreText.setText(`Pontos: ${this.score}`);
         this.impactSound.play();
