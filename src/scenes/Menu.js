@@ -38,19 +38,19 @@ export default class Menu extends Phaser.Scene {
 
 
     // adicionando as instruções básicas
-    this.add.text(40, 160, 'Controlar a nave:', textStyle)
-    this.add.text(50, 200, '<-  Move a nave para a esquerda', textStyle)
-    this.add.text(50, 240, '->  Move a nave para a direita', textStyle)
-    this.add.text(50, 280, '/\\  Move a nave para cima', textStyle)
-    this.add.text(50, 320, '\\/  Move a nave para baixo', textStyle)
-    this.add.text(50, 360, 'SPACE  Atirar', textStyle)
-    this.add.text(50, 400, 'ESC  Pausar o jogo', textStyle)
+    this.add.text(40, 160, 'Ship control:', textStyle)
+    this.add.text(50, 200, '<-   : Move left', textStyle)
+    this.add.text(50, 240, '->   : Move right', textStyle)
+    this.add.text(50, 280, '/\\   : Move up', textStyle)
+    this.add.text(50, 320, '\\/   : Move down', textStyle)
+    this.add.text(50, 360, 'SPACE: Shoot', textStyle)
+    this.add.text(50, 390, 'ESC  : Pause game', textStyle)
+    this.add.text(50, 420, 'SHIFT: Resume game', textStyle)
 
-    this.add.text(40, 500, 'Desvie dos inimigos', textStyle2)
-    this.add.text(40, 540, 'Atinja-os para adquirir pontos', textStyle2)
+    this.add.text(40, 500, '# Dodge the enemies and', textStyle2)
+    this.add.text(40, 530, 'hit them to earn points.', textStyle2)
+    this.add.text(40, 560, '# Collect the coins.', textStyle2)
   }
 
-  update() {
-
-  }
+  update() {}
 }

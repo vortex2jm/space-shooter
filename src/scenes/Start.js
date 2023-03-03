@@ -58,7 +58,7 @@ export default class Start extends Phaser.Scene {
 
     // adicionando botao para tela de instruções
     const menu = this.add.image(70, 540, 'menu').setScale(0.4).setInteractive();
-    this.add.text(130, 530, 'Como jogar', textStyle)
+    this.add.text(130, 530, 'How to play', textStyle)
 
     // adicionando interação quando o mouse passa por cima
     menu.on('pointerover', () => {

@@ -77,13 +77,13 @@ export default class Game extends Phaser.Scene{
 
 
         // adicionando o texto de vidas
-        this.lifesText = this.add.text(10, 10, `Vidas: ${this.lifes}`, {
+        this.lifesText = this.add.text(10, 10, `HP: ${this.lifes}`, {
             fontSize: 20,
             color: '#fff'
         });
 
         // adicionando o texto de pontuação
-        this.scoreText = this.add.text(10, 40, `Pontos: ${this.score}`, {
+        this.scoreText = this.add.text(10, 40, `Points: ${this.score}`, {
             fontSize: 20,
             color: '#fff'
         });
