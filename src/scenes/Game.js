@@ -218,6 +218,6 @@ export default class Game extends Phaser.Scene{
         this.gameMusic.stop();
         this.gameOverMusic.play();
         this.scene.stop();
-        this.scene.start('gameover');
+        this.scene.start('gameover', {score:this.score});
     }
 }
