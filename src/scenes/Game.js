@@ -192,6 +192,14 @@ export default class Game extends Phaser.Scene{
         alien.destroy();
         this.lifes--;
         this.lifesText.setText(`Vidas: ${this.lifes}`);
+        this.ship.setTint(0xff0000);
+        this.time.addEvent({
+            delay: 100,
+            callback: () => {
+                this.ship.clearTint();
+            },
+            loop: false
+        });
         if(this.lifes <= 0){
             this.gameOver();
         }
