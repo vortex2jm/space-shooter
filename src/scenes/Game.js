@@ -13,11 +13,14 @@ export default class Game extends Phaser.Scene{
         this.shipHeight = 72;
         this.lastFired = 0;
         this.shotCooldown = 500;
-        this.lastSpawned = 500;
+        this.lastSpawned = 1000;
+        this.lastCoinSpawned = 2000;
         this.spawnCooldown = 2000;
+        this.spawnCoinCooldown = 5000;
         this.shotPosition = this.shipWidth/4;
         this.alienGroup = this.physics.add.group();
         this.laserShotGroup = this.physics.add.group();
+        this.coinGroup = this.physics.add.group();
     }
     
     preload(){
@@ -25,6 +28,7 @@ export default class Game extends Phaser.Scene{
         this.load.image('background', './src/assets/img/galaxy.png');
         this.load.image('ship', './src/assets/img/spacecraft.png');
         this.load.image('laserShotImg', './src/assets/img/lasershot.png');
+        this.load.image('coin', './src/assets/img/coin.png');
 
         // carregando os spritesheets dos inimigos
         this.load.spritesheet('alien1', 
@@ -58,6 +62,7 @@ export default class Game extends Phaser.Scene{
         this.gameMusic = this.sound.add('gameMusic', {loop: true});
         this.gameOverMusic = this.sound.add('gameOverMusic', {loop: false});
         this.impactSound = this.sound.add('impact', {loop:false, volume: 0.4})
+        this.coinSound = this.sound.add('collectCoinMusic', {loop:false, volume: 0.4})
 
         // toca a musica de inicio do jogo, e quando terminar, toca a musica do jogo, em loop
         this.gameStartMusic.play();
@@ -124,11 +129,20 @@ export default class Game extends Phaser.Scene{
             this.lastSpawned = this.time.now + this.spawnCooldown;
         }
 
+        // adicionando as moedas
+        if(this.time.now > this.lastCoinSpawned){
+            this.createCoin();
+            this.lastCoinSpawned = this.time.now + this.spawnCoinCooldown;
+        }
+
         // colisão da nave com o inimigo
         this.physics.add.overlap(this.ship, this.alienGroup, this.hitShip, null, this);
 
         // colisão do tiro com o inimigo
         this.physics.add.overlap(this.laserShotGroup, this.alienGroup, this.hitAlien, null, this);
+
+        // colisão da nave com a moeda
+        this.physics.add.overlap(this.ship, this.coinGroup, this.collectCoin, null, this);
 
         // Atualizando a posição do background (efeito de movimento)
         this.updateBackgroundVelocity();
@@ -186,6 +200,19 @@ export default class Game extends Phaser.Scene{
         })
     }
 
+    createCoin(){
+        this.coinGroup.create(Phaser.Math.Between(0.05*this.scale.width, 0.95*this.scale.width), -40, 'coin');
+        this.coinGroup.children.iterate((child) => {
+            child.setScale(0.01);
+            child.setVelocityY(300);
+        });
+
+        // removendo as moedas que passaram para fora da tela e não foram coletadas
+        this.coinGroup.children.iterate((child)=>{
+            if (child && child.body.y>this.scale.height) child.destroy()
+        })
+    }
+
     hitShip(ship, alien){
         this.alienGroup.killAndHide(alien);
         this.alienGroup.remove(alien);
@@ -209,7 +236,6 @@ export default class Game extends Phaser.Scene{
         this.laserShotGroup.killAndHide(lasershot);
         this.laserShotGroup.remove(lasershot);
         lasershot.destroy();
-        alien.stop('alien1');
         alien.play('alien1-dead');
         alien.setVelocityY(0);
         this.time.addEvent({
@@ -223,6 +249,15 @@ export default class Game extends Phaser.Scene{
         this.score+=10;
         this.scoreText.setText(`Pontos: ${this.score}`);
         this.impactSound.play();
+    }
+
+    collectCoin(ship, coin){
+        this.coinGroup.killAndHide(coin);
+        this.coinGroup.remove(coin);
+        coin.destroy();
+        this.score+=100;
+        this.scoreText.setText(`Pontos: ${this.score}`);
+        this.coinSound.play();
     }
 
     updateBackgroundVelocity(){
